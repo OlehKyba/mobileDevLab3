@@ -1,21 +1,43 @@
-import { StatusBar } from 'expo-status-bar';
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { Text } from 'react-native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
-export default function App() {
+
+import { Nav, Center } from './src/UI';
+import { MovieListScreen } from "./src/screens";
+
+
+function Item2Screen() {
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+      <Center>
+          <Text>Item2!</Text>
+      </Center>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+const Tab = createBottomTabNavigator();
+
+export default function App() {
+    const navigation = [
+        {
+            name: "Movies List",
+            component: MovieListScreen,
+            iconFactory: (size, color) =>
+                <MaterialCommunityIcons name="library-movie" size={size} color={color} />
+        },
+    ];
+
+    return (
+        <Nav tab={Tab} navigation={navigation}>
+            {navigation.map(item => (
+                <Tab.Screen
+                    key={item.name}
+                    name={item.name}
+                    component={item.component}
+                />
+            ))}
+            <Tab.Screen name="Item2" component={Item2Screen}/>
+        </Nav>
+  );
+}
