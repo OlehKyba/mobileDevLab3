@@ -6,11 +6,9 @@ import { MovieListItem } from "./MovieListItem";
 import { MoviesRepository } from '../domain';
 import { Center } from "../UI";
 
-import { rawMovies } from '../../rawMovies';
-
 export class MovieListScreen extends Component {
     state = {
-        movieRepository: new MoviesRepository(rawMovies),
+        movieRepository: new MoviesRepository(),
         movies: [],
     }
     componentDidMount() {
