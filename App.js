@@ -5,7 +5,8 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 
 import { Nav, Center } from './src/UI';
-import { MovieListScreen } from "./src/screens";
+import { MovieStackScreen } from "./src/stacks";
+import {MoviesRepository} from "./src/domain";
 
 
 function Item2Screen() {
@@ -22,7 +23,7 @@ export default function App() {
     const navigation = [
         {
             name: "Movies List",
-            component: MovieListScreen,
+            component: MovieStackScreen,
             iconFactory: (size, color) =>
                 <MaterialCommunityIcons name="library-movie" size={size} color={color} />
         },

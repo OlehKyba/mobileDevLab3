@@ -5,10 +5,11 @@ import PropTypes from "prop-types";
 import { Avatar, Badge, ListItem } from "react-native-elements";
 
 
-export const MovieListItem = ({title, year, type, poster}) => {
+export const MovieListItem = ({title, year, type, poster, onPress, onRemove}) => {
     return (
         <ListItem
             bottomDivider
+            onPress={onPress}
         >
             {poster ?
                 <Avatar
@@ -31,12 +32,20 @@ export const MovieListItem = ({title, year, type, poster}) => {
                     }
                 </ListItem.Subtitle>
             </ListItem.Content>
+            <ListItem.Chevron
+                name={'delete'}
+                color={'red'}
+                type={'material'}
+                size={40}
+                onPress={onRemove}
+            />
         </ListItem>
     );
 };
 
 MovieListItem.propTypes = {
     title: PropTypes.string.isRequired,
+    onPress: PropTypes.func.isRequired,
     type: PropTypes.string,
     poster: PropTypes.number,
     year: PropTypes.string,

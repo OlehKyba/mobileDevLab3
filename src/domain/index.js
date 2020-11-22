@@ -1,2 +1,2 @@
-export { Movie } from "./movies";
+export { Movie } from "./movie";
 export { MoviesRepository } from "./moviesRepository";
