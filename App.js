@@ -1,21 +1,11 @@
 import React from 'react';
-import { Text } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { MaterialCommunityIcons, Ionicons } from '@expo/vector-icons';
 
 
-import { Nav, Center } from './src/UI';
-import { MovieStackScreen } from "./src/stacks";
-import {MoviesRepository} from "./src/domain";
+import { Nav } from './src/UI';
+import { MovieStackScreen, ImagesStackScreen } from "./src/stacks";
 
-
-function Item2Screen() {
-  return (
-      <Center>
-          <Text>Item2!</Text>
-      </Center>
-  );
-}
 
 const Tab = createBottomTabNavigator();
 
@@ -27,6 +17,12 @@ export default function App() {
             iconFactory: (size, color) =>
                 <MaterialCommunityIcons name="library-movie" size={size} color={color} />
         },
+        {
+            name: "Images",
+            component: ImagesStackScreen,
+            iconFactory: (size, color) =>
+                <Ionicons name="md-images" size={size} color={color} />
+        }
     ];
 
     return (
@@ -38,7 +34,6 @@ export default function App() {
                     component={item.component}
                 />
             ))}
-            <Tab.Screen name="Item2" component={Item2Screen}/>
         </Nav>
   );
 }
