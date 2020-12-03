@@ -1,7 +1,5 @@
 import React from "react";
-import {createStackNavigator} from "@react-navigation/stack";
-import { Ionicons } from '@expo/vector-icons';
-import {Button} from 'react-native-elements';
+import { createStackNavigator } from "@react-navigation/stack";
 
 import { ImagesScreen } from "../screens";
 import { useOrientation } from "../hooks";
@@ -16,13 +14,7 @@ export const ImagesStackScreen = ({navigation}) => {
                 name="Images"
                 component={ImagesScreen}
                 options={{
-                    headerStyle: {height: orientation === 'PORTRAIT' ? 100 : 50},
-                    headerRight: () => (
-                        <Button
-                            type="clear"
-                            onPress={() => {}}
-                            icon={<Ionicons name="ios-add" size={40}/>}
-                        />)
+                    headerStyle: {height: orientation === 'PORTRAIT' ? 100 : 50}
                 }}
             />
         </ImagesStack.Navigator>

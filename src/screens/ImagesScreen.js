@@ -1,11 +1,14 @@
-import React from "react";
+import React, {useState, useLayoutEffect} from "react";
 import {Dimensions, Image, ScrollView} from 'react-native';
-import {Col, Grid, Row} from "react-native-easy-grid";
 
-import {posters} from "../domain";
+import * as ImagePicker from 'expo-image-picker';
+import {Col, Grid, Row} from "react-native-easy-grid";
+import {Button} from "react-native-elements";
+import {Ionicons} from "@expo/vector-icons";
+
 import {useOrientation} from "../hooks";
 
-const chunkify = (array, length) => {
+const chunking = (array, length) => {
     let begin = 0;
     let end = length;
     const chunks = [];
@@ -22,26 +25,49 @@ const chunkify = (array, length) => {
     return chunks;
 }
 
-export const ImagesScreen = () => {
+export const ImagesScreen = ({navigation}) => {
     useOrientation();
-    const imagesArray = chunkify(Object.values(posters), 3);
+    const [images, setImages] = useState([]);
+
+    const addImage = async () => {
+        const result = await ImagePicker.launchImageLibraryAsync({
+            allowsEditing: false,
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        });
+        setImages(prevState => [...prevState, result.uri]);
+    };
+
+    useLayoutEffect(() => {
+        navigation.setOptions({
+            headerRight: () => (
+                <Button
+                    type="clear"
+                    onPress={addImage}
+                    icon={<Ionicons name="ios-add" size={40}/>}
+                />
+            ),
+        });
+    }, [navigation]);
+
+    const imagesArray = chunking(images, 3);
     const { width } = Dimensions.get('window');
 
     const height = width / 3;
     const colStyle = {height};
     const secondRowColStyle = {height: height * 2};
 
-    const image = img => (
+    const key = (uri, index) => `${uri}_${index}`;
+    const image = uri => (
         <Image
-            source={{uri: Image.resolveAssetSource(img).uri}}
+            source={{uri: uri}}
             style={{height: "100%", width: "100%"}}
         />);
 
     const mapNormalChunk = (chunk, index) => {
         return (
             <Row key={index}>
-                {chunk.map(img => (
-                    <Col style={colStyle} key={img}>
+                {chunk.map((img, index) => (
+                    <Col style={colStyle} key={key(img, index)}>
                         {img && image(img)}
                     </Col>)
                 )}
@@ -53,14 +79,14 @@ export const ImagesScreen = () => {
         const firstImages = chunk.slice(0, 2);
         const thirdImage = chunk[2];
 
-        const firstPart = firstImages.map((img) => (
-            <Row key={img}>
+        const firstPart = firstImages.map((img, index) => (
+            <Row key={key(img, index)}>
                 {img && image(img)}
             </Row>)
         );
 
         return (
-            <Row>
+            <Row key={index}>
                 <Col size={1} style={secondRowColStyle}>
                     {firstPart}
                 </Col>
@@ -75,7 +101,7 @@ export const ImagesScreen = () => {
         <ScrollView>
             <Grid>
                 {imagesArray.map((chunk, index) => {
-                    return index % 2 !== 0 ? mapSpecialChunk(chunk, index): mapNormalChunk(chunk, index);
+                    return index % 3 === 1 ? mapSpecialChunk(chunk, index): mapNormalChunk(chunk, index);
                 })}
             </Grid>
         </ScrollView>
