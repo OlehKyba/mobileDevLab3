@@ -23,4 +23,12 @@
 ## Results:
 * Video:
 [To Google Drive](https://drive.google.com/file/d/1wyBya0dat9UooJXl_uq_BUfjMUQSrIPQ/view?usp=sharing)
+
+## Programming assignment 6
+***During the development process no problems were faced.***
+
+## Results:
+* Video:
+[To Google Drive](https://drive.google.com/file/d/1zw_OYeJ8FkrfFpyNNOJgUnAL7Yd2kdj_/view?usp=sharing)
+
 * ### [Google Drive](https://drive.google.com/drive/folders/1jVc_KopN3kiFTXzMs9S9HVEno_f429nv?usp=sharing)
