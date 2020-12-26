@@ -2,11 +2,12 @@
   "name": "lab3",
   "displayName": "lab3",
   "expo": {
-    "name": "lab3",
-    "slug": "lab3",
+    "name": "lab5",
+    "slug": "lab5",
     "version": "1.0.0",
     "assetBundlePatterns": [
       "**/*"
-    ]
+    ],
+    "description": ""
   }
 }
