@@ -31,4 +31,13 @@
 * Video:
 [To Google Drive](https://drive.google.com/file/d/1zw_OYeJ8FkrfFpyNNOJgUnAL7Yd2kdj_/view?usp=sharing)
 
+## Programming assignment 7
+***During the development process no problems were faced.***
+
+:warning: **3.h ActivityIndicator located in the search bar!** :warning:
+
+## Results:
+* Video:
+[To Google Drive](https://drive.google.com/file/d/1uHoY8W6oJZBUblVZsnVRPyhxSNBboEfj/view?usp=sharing)
+
 * ### [Google Drive](https://drive.google.com/drive/folders/1jVc_KopN3kiFTXzMs9S9HVEno_f429nv?usp=sharing)
