@@ -1,6 +1,5 @@
 import {Movie} from "./movie";
 
-import {posters} from "./posters";
 import moviesList from "./MoviesList.json";
 
 import tt0076759 from "./movies/tt0076759.json";
@@ -14,9 +13,14 @@ import tt2488496 from "./movies/tt2488496.json";
 import tt2527336 from "./movies/tt2527336.json";
 import tt3748528 from "./movies/tt3748528.json";
 
+import axios from "axios";
+
+const API_KEY = '7e9fe69e';
+
 
 export class MoviesRepository {
     constructor() {
+        this._baseUrl = `http://www.omdbapi.com/?apikey=${API_KEY}`;
         this._movies = moviesList["Search"].map(
             ({imdbID, Title, Year, Poster, Type}) => new Movie(
                 imdbID,
@@ -52,8 +56,7 @@ export class MoviesRepository {
     _getPoster(posterName) {
         if (!posterName) return null;
         else if (typeof posterName == 'number') return posterName;
-        const [poster] = posterName.split('.');
-        return posters[poster];
+        return posterName;
     }
 
     _mapType(movieType) {
@@ -66,18 +69,50 @@ export class MoviesRepository {
             return v.toString(16);
         });
     }
+    _createListReqUrl(search) {
+        const s = search.replaceAll(" ", "+");
+        return this._baseUrl + `&s=${s}&page=1`;
+    }
 
-    getList() {
-        return this._movies;
+    _createMovieReqUrl(movieId) {
+        return this._baseUrl + `&i=${movieId}`;
     }
 
     get(movieId) {
-        return this._moviesDetails[movieId];
+        const url = this._createMovieReqUrl(movieId);
+        return axios.get(url)
+            .then(res => {
+                const movieDetails = res.data;
+
+                const posterName = movieDetails['Poster'];
+                const movieType = movieDetails['Type'];
+
+                movieDetails['Poster'] = this._getPoster(posterName);
+                movieDetails['Type'] = this._mapType(movieType);
+
+                return movieDetails;
+            })
+            .catch(() => ({}));
     }
 
     search(searchQuery) {
-        const pattern = new RegExp(searchQuery);
-        return this._movies.filter(item => pattern.test(item.title));
+        if (searchQuery.length >= 3){
+            const url = this._createListReqUrl(searchQuery);
+            return axios.get(url)
+                .then(res => {
+                    const moviesList = res.data;
+                    return moviesList["Search"].map(
+                        ({imdbID, Title, Year, Poster, Type}) => new Movie(
+                            imdbID,
+                            Title,
+                            Year,
+                            this._mapType(Type),
+                            this._getPoster(Poster),
+                        ));
+                })
+                .catch(() => []);
+        }
+        return Promise.resolve([]);
     }
 
     push(movie) {

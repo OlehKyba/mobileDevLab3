@@ -1,13 +1,22 @@
-import React from 'react';
-import { Text, Image, ScrollView } from 'react-native'
-import { Card, Rating } from 'react-native-elements'
+import React, {useState, useEffect} from 'react';
+import {Text, Image, ScrollView, ActivityIndicator} from 'react-native';
+import { Card, Rating } from 'react-native-elements';
 
+import { moviesRepository } from "../domain/repo";
 
 export const MovieDetailsScreen = ({route}) => {
-    const movieDetails = route.params;
+    const [movieDetails, setMovieDetails] = useState({});
+
+    useEffect(() => {
+        const {movieId} = route.params;
+        moviesRepository.get(movieId)
+            .then(data => setMovieDetails(data));
+    }, []);
+
     const image = movieDetails['Poster'];
     const title = movieDetails['Title'];
-    const rating = Number.parseFloat(movieDetails['imdbRating'])
+    const strRating = movieDetails['imdbRating'];
+    const rating = strRating ? Number.parseFloat(movieDetails['imdbRating']) : 0;
 
     const mainProperties = {Released: 'Released', Genre: 'Genre', Runtime: 'Runtime'};
     const peopleProperties = {
@@ -35,14 +44,12 @@ export const MovieDetailsScreen = ({route}) => {
             <Card>
                 <Card.Title>{title}</Card.Title>
                 <Card.Divider/>
-                {image ?
-                    <Card.Image
-                        source={{uri: Image.resolveAssetSource(image).uri}}
-                        resizeMode={'contain'}
-                        style={{height: 250}}
-                    />
-                    : null
-                }
+                <Card.Image
+                    source={{uri: image}}
+                    resizeMode={'contain'}
+                    style={{height: 250}}
+                    PlaceholderContent={<ActivityIndicator />}
+                />
                 {renderProperties(mainProperties)}
                 {renderProperties(peopleProperties)}
                 {renderProperties(manufactureProperties)}

@@ -1,5 +1,4 @@
 import React from "react";
-import { Image } from "react-native";
 import PropTypes from "prop-types";
 
 import { Avatar, Badge, ListItem } from "react-native-elements";
@@ -15,7 +14,7 @@ export const MovieListItem = ({title, year, type, poster, onPress, onRemove}) =>
                 <Avatar
                     rounded
                     size="large"
-                    source={{uri: Image.resolveAssetSource(poster).uri}}
+                    source={{uri: poster}}
                 />
                 : null
             }
@@ -47,6 +46,9 @@ MovieListItem.propTypes = {
     title: PropTypes.string.isRequired,
     onPress: PropTypes.func.isRequired,
     type: PropTypes.string,
-    poster: PropTypes.number,
+    poster: PropTypes.oneOfType([
+        PropTypes.number,
+        PropTypes.string,
+    ]),
     year: PropTypes.string,
 };

@@ -1,5 +1,6 @@
-import React, {useState, useLayoutEffect} from "react";
-import {Dimensions, Image, ScrollView} from 'react-native';
+import React, {useState, useEffect, useLayoutEffect} from "react";
+import {ActivityIndicator, Dimensions, ScrollView} from 'react-native';
+import {Image} from "react-native-elements";
 
 import * as ImagePicker from 'expo-image-picker';
 import {Col, Grid, Row} from "react-native-easy-grid";
@@ -7,6 +8,7 @@ import {Button} from "react-native-elements";
 import {Ionicons} from "@expo/vector-icons";
 
 import {useOrientation} from "../hooks";
+import {imagesRepository} from "../domain/repo";
 
 const chunking = (array, length) => {
     let begin = 0;
@@ -28,6 +30,10 @@ const chunking = (array, length) => {
 export const ImagesScreen = ({navigation}) => {
     useOrientation();
     const [images, setImages] = useState([]);
+    useEffect(() => {
+        imagesRepository.get()
+            .then(data => setImages(data));
+    }, [])
 
     const addImage = async () => {
         const result = await ImagePicker.launchImageLibraryAsync({
@@ -53,14 +59,16 @@ export const ImagesScreen = ({navigation}) => {
     const { width } = Dimensions.get('window');
 
     const height = width / 3;
+    const specialWidth = height * 2;
     const colStyle = {height};
     const secondRowColStyle = {height: height * 2};
 
     const key = (uri, index) => `${uri}_${index}`;
-    const image = uri => (
+    const image = (uri, isSpecial = false) => (
         <Image
             source={{uri: uri}}
-            style={{height: "100%", width: "100%"}}
+            style={{height: "100%", width: isSpecial ? specialWidth : height}}
+            PlaceholderContent={<ActivityIndicator />}
         />);
 
     const mapNormalChunk = (chunk, index) => {
@@ -80,7 +88,7 @@ export const ImagesScreen = ({navigation}) => {
         const thirdImage = chunk[2];
 
         const firstPart = firstImages.map((img, index) => (
-            <Row key={key(img, index)}>
+            <Row key={key(img, index)} style={colStyle}>
                 {img && image(img)}
             </Row>)
         );
@@ -91,18 +99,21 @@ export const ImagesScreen = ({navigation}) => {
                     {firstPart}
                 </Col>
                 <Col size={2} style={secondRowColStyle}>
-                    {thirdImage && image(thirdImage)}
+                    {thirdImage && image(thirdImage, true)}
                 </Col>
             </Row>
         );
     };
 
+    const readyImages = imagesArray.map((chunk, index) => {
+        return index % 3 === 1 ? mapSpecialChunk(chunk, index): mapNormalChunk(chunk, index);
+    });
+
+
     return (
         <ScrollView>
             <Grid>
-                {imagesArray.map((chunk, index) => {
-                    return index % 3 === 1 ? mapSpecialChunk(chunk, index): mapNormalChunk(chunk, index);
-                })}
+                {readyImages}
             </Grid>
         </ScrollView>
     );

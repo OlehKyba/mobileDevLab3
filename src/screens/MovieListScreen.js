@@ -10,24 +10,28 @@ export class MovieListScreen extends Component {
     state = {
         search: '',
         movies: [],
+        isLoading: false,
     }
 
     componentDidMount() {
-        const movies = moviesRepository.search(this.state.search)
-            .map(item => ({key: item.id, ...item}));
-        this.setState({movies});
+        this.searchUpdate(this.state.search);
     }
 
     onItemPress = (movieId) => {
-        const movieDetails = moviesRepository.get(movieId);
-        this.props.navigation.navigate('Movie Details', movieDetails);
+        this.props.navigation.navigate('Movie Details', {movieId});
     }
 
     searchUpdate = searchQuery => {
-        this.setState(state => ({
-            search: searchQuery,
-            movies: moviesRepository.search(searchQuery),
-        }));
+        this.setState({isLoading: true, search: searchQuery});
+        moviesRepository
+            .search(searchQuery)
+            .then(movies => {
+                this.setState(state => ({
+                    search: searchQuery,
+                    movies: movies.map(item => ({key: item.id, ...item})),
+                    isLoading: false,
+                }));
+            });
     }
 
     deleteMovie = movieId => {
@@ -41,8 +45,8 @@ export class MovieListScreen extends Component {
             <View>
                 <SearchBar
                     lightTheme
-                    showLoading
-                    placeholder="Type Here.."
+                    showLoading={this.state.isLoading}
+                    placeholder="Type Here..."
                     onChangeText={this.searchUpdate}
                     onClear={() => this.searchUpdate('')}
                     value={this.state.search}
@@ -59,7 +63,7 @@ export class MovieListScreen extends Component {
                         />
                     </View>
                     : <Center style={{paddingBottom: 120}}>
-                        <Text>No items found!</Text>
+                        <Text>No items found or search length less then 3 characters!</Text>
                     </Center>
                 }
             </View>
